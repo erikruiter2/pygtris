@@ -1,0 +1,4 @@
+- Game built using pyglet (https://bitbucket.org/pyglet/pyglet/wiki/Home) 
+- Logo Designed with FlamingText.com (http://www.flamingtext.com)
+- Backgrounds downloaded from http://publicdomainarchive.com/
+- Tetris information from http://colinfahey.com/tetris/tetris.html
