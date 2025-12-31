@@ -1,4 +1,4 @@
-import urllib2
+import urllib3
 
 background_urls = [
     "http://publicdomainarchive.com/wp-content/uploads/2014/12/public-domain-images-free-stock-photos-high-quality-resolution-downloads-public-domain-archive-8-1000x662.jpg",
@@ -22,12 +22,12 @@ def download_background(url, file_name):
     "Connection": "keep-alive" 
     }
 
-    request = urllib2.Request(url, headers=request_headers)
-    u = urllib2.urlopen(request)
+    request = urllib3.Request(url, headers=request_headers)
+    u = urllib3.urlopen(request)
     f = open(file_name, 'wb')
     meta = u.info()
     file_size = int(meta.getheaders("Content-Length")[0])
-    print "Downloading: %s Bytes: %s" % (file_name, file_size)
+    print("Downloading: %s Bytes: %s" % (file_name, file_size))
 
     file_size_dl = 0
     block_sz = 8192
@@ -40,6 +40,6 @@ def download_background(url, file_name):
         f.write(buffer)
         status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / file_size)
         status = status + "\b" * (len(status) + 1)
-        print status,
+        print(status)
 
     f.close()

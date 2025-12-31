@@ -90,8 +90,11 @@ class Pygtris(pyglet.window.Window):
 
     def init_backgrounds(self):
 
+        pyglet.resource.path = ['backgrounds']
+        pyglet.resource.reindex()
+        
         dir = os.getcwd() + "/backgrounds/"
-        print dir
+
         from os import listdir
         from os.path import isfile, join
         onlyfiles = [f for f in listdir(dir) if isfile(join(dir, f))]
@@ -107,7 +110,7 @@ class Pygtris(pyglet.window.Window):
             pyglet.resource.reindex()
 
         for i in range(0, len(background_urls)):
-            self.backgrounds.append(pyglet.resource.image("backgrounds/level" + str(i + 1) + ".jpg"))
+            self.backgrounds.append(pyglet.resource.image("level" + str(i + 1) + ".jpg"))
         for i in self.backgrounds:
             i.width = self.width
             i.height = self.height
@@ -135,9 +138,7 @@ class Pygtris(pyglet.window.Window):
             self.game_state = "paused"
 
         if symbol == key.UP and self.game_state == "running":
-            self.agrid.block_action(self.ablock, "dim")
             self.handle_block_move(self.ablock, "up")
-            self.agrid.block_action(self.ablock, "lit")
 
     def on_key_release(self, symbol, modifiers):
         if symbol == key.DOWN:
@@ -150,12 +151,9 @@ class Pygtris(pyglet.window.Window):
         if self.game_state == "running":
             if self.keypressed != 'none':
                 self.repeatdelay += 1
-                print self.repeatdelay
+                print(self.repeatdelay)
             if self.repeatdelay == 1 or self.repeatdelay > 3 or self.keypressed == "down":
-                self.agrid.block_action(self.ablock, "dim")
                 self.handle_block_move(self.ablock, self.keypressed)
-
-                self.agrid.block_action(self.ablock, "lit")
 
     def tick(self, dt):
         self.handle_keys()
@@ -169,9 +167,7 @@ class Pygtris(pyglet.window.Window):
             self.falltimer = 0
 
             # move block one row down
-            self.agrid.block_action(self.ablock, "dim")
             result = self.handle_block_move(self.ablock, "down")
-            self.agrid.block_action(self.ablock, "lit")
 
             if result is False:
 
@@ -190,11 +186,11 @@ class Pygtris(pyglet.window.Window):
 
     def on_draw(self):
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT)
-        glLoadIdentity()
+        #glLoadIdentity()
 
         # Draw background
         if self.level <= 8:
-            self.backgrounds[self.level - 1].blit(0, 0)
+            self.backgrounds[int(self.level - 1)].blit(0, 0)
         if self.level > 8:
             self.backgrounds[8 - 1].blit(0, 0)
 
@@ -243,6 +239,7 @@ class Pygtris(pyglet.window.Window):
 
     def handle_block_move(self, block, direction):
 
+        self.agrid.block_action(self.ablock, "dim")
         if direction == "down":
             block.line += 1
         if direction == "up":
@@ -280,6 +277,8 @@ class Pygtris(pyglet.window.Window):
                         block.pos += 1
                     if direction == "up":
                         block.rotate_back()
+
+                    self.agrid.block_action(self.ablock, "lit")
                     return False
 
                 if block_state == "ok" and direction == "down":
@@ -290,6 +289,7 @@ class Pygtris(pyglet.window.Window):
                 x = 1
                 y += 1
 
+        self.agrid.block_action(self.ablock, "lit")
         return True
 
 
@@ -303,7 +303,7 @@ class Grid():
     def print_grid(self):
         for x in self.grid:
             strings = map(str, x)
-            print "".join(strings)
+            print("".join(strings))
 
     def block_action(self, block, action):
         if action == "lit":
@@ -336,7 +336,7 @@ class Grid():
 
         # if there are lines found, generate a new grid with the lines removed,
         # and empty space on top
-        print "lineindexes", len(lineindexes)
+        print("lineindexes", len(lineindexes))
         if len(lineindexes) > 0:
             newgrid.append([0] * (board_cols + 1))
             for i in lineindexes:
